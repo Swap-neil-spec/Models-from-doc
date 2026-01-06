@@ -40,7 +40,8 @@ class GeminiService {
       }
 
       print('Supabase Edge Function: Invoking analyze-doc...');
-      final response = await Supabase.instance.functions.invoke(
+      print('Supabase Edge Function: Invoking analyze-doc...');
+      final response = await Supabase.instance.client.functions.invoke(
         'analyze-doc',
         body: {'parts': parts},
       );

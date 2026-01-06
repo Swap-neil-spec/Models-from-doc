@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mfd_app/features/monetization/presentation/views/pricing_overlay.dart';
+import 'package:mfd_app/features/monetization/domain/services/subscription_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -36,10 +38,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final state = ref.watch(forecastControllerProvider);
     final model = state.model;
     final controller = ref.read(forecastControllerProvider.notifier);
+    
+    final subState = ref.watch(subscriptionProvider);
+    final isPro = subState.isPro;
 
     // Find Growth Rate Assumption for Slider (or Tree)
-    final growthAssumption = state.assumptions.firstWhere((a) => a.key == 'revenue_growth_rate', orElse: () => const Assumption(key: '', label: '', value: 0));
-    final burnAssumption = state.assumptions.firstWhere((a) => a.key == 'monthly_opex', orElse: () => const Assumption(key: '', label: '', value: 0));
+    // Find Growth Rate Assumption for Slider (or Tree)
+    final growthAssumption = state.assumptions.firstWhere((a) => a.key == 'revenue_growth_rate', orElse: () => Assumption(key: '', label: '', value: 0));
+    final burnAssumption = state.assumptions.firstWhere((a) => a.key == 'monthly_opex', orElse: () => Assumption(key: '', label: '', value: 0));
 
     return OnyxTourOverlay(
       showTour: _showTour,
@@ -75,6 +81,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   ),
                   Row(
                     children: [
+                       if (!isPro)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.signalGreen,
+                              foregroundColor: AppTheme.voidBlack,
+                            ),
+                            onPressed: () => _showPricingOverlay(context),
+                            icon: const Icon(Icons.star, size: 16),
+                            label: const Text('Upgrade'),
+                          ),
+                        ),
                       IconButton(
                         onPressed: () => _uploadActuals(context, ref),
                         icon: const Icon(Icons.show_chart, color: Colors.purpleAccent),
@@ -343,6 +362,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             ),
         ),
       ],
+    ),
     );
   }
 
@@ -418,8 +438,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             ListTile(
               leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
               title: const Text('Export as PDF Report'),
+              trailing: !ref.read(subscriptionProvider).isPro ? const Icon(Icons.lock, size: 16, color: Colors.white24) : null,
               onTap: () async {
                 Navigator.pop(context);
+                if (!ref.read(subscriptionProvider).isPro) {
+                   _showPricingOverlay(context);
+                   return;
+                }
                 final controller = ref.read(exportControllerProvider);
                 final state = ref.read(forecastControllerProvider);
                 await controller.exportPdf(state.model, state.assumptions);
@@ -454,6 +479,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showPricingOverlay(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.9),
+      builder: (ctx) => PricingOverlay(onClose: () => Navigator.pop(ctx)),
     );
   }
   void _uploadActuals(BuildContext context, WidgetRef ref) {
