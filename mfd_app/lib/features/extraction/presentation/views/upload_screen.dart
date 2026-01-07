@@ -8,13 +8,45 @@ import 'package:mfd_app/features/extraction/domain/entities/document.dart';
 import 'package:mfd_app/core/ui/cinematic_loader.dart';
 
 import 'package:mfd_app/features/onboarding/domain/entities/onboarding_goal.dart';
+import 'package:mfd_app/features/onboarding/presentation/views/guidance_wizard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class UploadScreen extends ConsumerWidget {
+class UploadScreen extends ConsumerStatefulWidget {
   final OnboardingGoal? goal;
   const UploadScreen({super.key, this.goal});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<UploadScreen> createState() => _UploadScreenState();
+}
+
+class _UploadScreenState extends ConsumerState<UploadScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkWizard());
+  }
+
+  Future<void> _checkWizard() async {
+    final prefs = await SharedPreferences.getInstance();
+    final hasSeen = prefs.getBool('hasSeenWizard') ?? false;
+
+    if (!hasSeen && mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (ctx) => GuidanceWizard(
+            onFinish: () async {
+               await prefs.setBool('hasSeenWizard', true);
+               if (ctx.mounted) Navigator.pop(ctx);
+            },
+          ),
+          fullscreenDialog: true,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final uploadState = ref.watch(uploadControllerProvider);
     final controller = ref.read(uploadControllerProvider.notifier);
     final theme = Theme.of(context);
@@ -26,9 +58,27 @@ class UploadScreen extends ConsumerWidget {
         title: const Text('Upload Documents'),
         centerTitle: true,
       ),
+      bottomNavigationBar: documents.isNotEmpty ? Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: FilledButton(
+          onPressed: isAnalyzing 
+              ? null 
+              : () => _handleProcess(context, controller, ref),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: isAnalyzing 
+                ? const SizedBox(
+                    height: 20, 
+                    width: 20, 
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)
+                  )
+                : const Text('Process Documents with AI'),
+          ),
+        ),
+      ) : null,
       body: Stack(
         children: [
-          Padding(
+          SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -127,39 +177,22 @@ class UploadScreen extends ConsumerWidget {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 12),
-                  Expanded(
-                    child: ListView.separated(
+                  ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: documents.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 8),
                       itemBuilder: (context, index) {
                         final doc = documents[index];
                         return _DocumentListTile(doc: doc, onDelete: () => controller.removeFile(doc.id));
                       },
-                    ),
                   ),
-                  
-                  const SizedBox(height: 16),
-                  FilledButton(
-                    onPressed: isAnalyzing 
-                        ? null 
-                        : () => _handleProcess(context, controller, ref),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: isAnalyzing 
-                          ? const SizedBox(
-                              height: 20, 
-                              width: 20, 
-                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)
-                            )
-                          : const Text('Process Documents with AI'),
-                    ),
-                  ),
+                  const SizedBox(height: 80), // Bottom padding for FAB/Navbar
                 ],
               ],
             ),
           ),
           
-
           if (isAnalyzing)
             Positioned.fill(
               child: Container(
