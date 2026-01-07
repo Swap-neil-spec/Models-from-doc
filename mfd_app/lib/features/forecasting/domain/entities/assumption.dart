@@ -28,4 +28,21 @@ class Assumption {
       unit: unit ?? this.unit,
     );
   }
+  Map<String, dynamic> toJson() => {
+    'key': key,
+    'label': label,
+    'value': value,
+    'sourceSnippet': sourceSnippet,
+    'unit': unit,
+  };
+
+  factory Assumption.fromJson(Map<String, dynamic> json) {
+    return Assumption(
+      key: json['key'] as String,
+      label: json['label'] as String,
+      value: (json['value'] as num).toDouble(),
+      sourceSnippet: json['sourceSnippet'] as String?,
+      unit: json['unit'] as String? ?? '',
+    );
+  }
 }

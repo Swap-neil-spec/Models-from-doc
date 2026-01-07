@@ -55,7 +55,7 @@ class FinTechSidebar extends StatelessWidget {
             icon: Icons.settings_outlined,
             label: 'Settings',
             isActive: currentRoute == '/settings',
-            onTap: () {},
+            onTap: () => context.go('/settings'),
           ),
           const SizedBox(height: 24),
         ],

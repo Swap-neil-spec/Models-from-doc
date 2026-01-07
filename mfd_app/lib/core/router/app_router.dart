@@ -8,6 +8,7 @@ import 'package:mfd_app/features/home/presentation/views/home_screen.dart';
 import 'package:mfd_app/features/auth/presentation/views/login_screen.dart';
 import 'package:mfd_app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:mfd_app/features/onboarding/domain/entities/onboarding_goal.dart';
+import 'package:mfd_app/features/settings/presentation/views/settings_screen.dart';
 import 'package:mfd_app/core/ui/fintech_scaffold.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -55,7 +56,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/settings',
-            builder: (context, state) => const Scaffold(body: Center(child: Text('Settings Placeholder'))), // Temp
+            builder: (context, state) => const SettingsScreen(),
           ),
           GoRoute(
             path: '/team',

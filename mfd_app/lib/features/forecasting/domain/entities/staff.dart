@@ -24,4 +24,19 @@ class Staff {
       startMonth: startMonth ?? this.startMonth,
     );
   }
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'role': role,
+    'monthlySalary': monthlySalary,
+    'startMonth': startMonth,
+  };
+
+  factory Staff.fromJson(Map<String, dynamic> json) {
+    return Staff(
+      id: json['id'] as String,
+      role: json['role'] as String,
+      monthlySalary: (json['monthlySalary'] as num).toDouble(),
+      startMonth: json['startMonth'] as int,
+    );
+  }
 }

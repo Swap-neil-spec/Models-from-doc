@@ -20,14 +20,22 @@ serve(async (req) => {
 
     // 3. Parse Request
     const { parts } = await req.json()
-    
+
     // 4. Proxy to Gemini
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-    
+
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts }] })
+      body: JSON.stringify({
+        contents: [{ parts }],
+        safetySettings: [
+          { mainCategory: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+          { mainCategory: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+          { mainCategory: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+          { mainCategory: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+        ]
+      })
     });
 
     const data = await response.json();
