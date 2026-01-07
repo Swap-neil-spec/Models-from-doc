@@ -100,38 +100,40 @@ class _GuidanceWizardState extends ConsumerState<GuidanceWizard> {
                     itemCount: _steps.length,
                     itemBuilder: (context, index) {
                       final step = _steps[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(48.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(32),
-                              decoration: BoxDecoration(
-                                color: (step['color'] as Color).withOpacity(0.1),
-                                shape: BoxShape.circle,
-                                border: Border.all(color: (step['color'] as Color).withOpacity(0.5), width: 2),
-                                boxShadow: [BoxShadow(color: (step['color'] as Color).withOpacity(0.2), blurRadius: 40)],
-                              ),
-                              child: Icon(step['icon'], size: 64, color: step['color']),
-                            ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack).fadeIn(),
-                            
-                            const SizedBox(height: 48),
-                            
-                            Text(
-                              step['title'],
-                              style: GoogleFonts.getFont('Inter', fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ).animate().slideY(begin: 0.2, end: 0, delay: 200.ms).fadeIn(),
-                            
-                            const SizedBox(height: 24),
-                            
-                            Text(
-                              step['subtitle'],
-                              style: GoogleFonts.getFont('Inter', fontSize: 18, color: AppTheme.textMedium, height: 1.5),
-                              textAlign: TextAlign.center,
-                            ).animate().slideY(begin: 0.2, end: 0, delay: 400.ms).fadeIn(),
-                          ],
+                      return Center(
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.all(48.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(32),
+                                decoration: BoxDecoration(
+                                  color: (step['color'] as Color).withOpacity(0.1),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: (step['color'] as Color).withOpacity(0.5), width: 2),
+                                  boxShadow: [BoxShadow(color: (step['color'] as Color).withOpacity(0.2), blurRadius: 40)],
+                                ),
+                                child: Icon(step['icon'], size: 64, color: step['color']),
+                              ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack).fadeIn(),
+                              
+                              const SizedBox(height: 48),
+                              
+                              Text(
+                                step['title'],
+                                style: GoogleFonts.getFont('Inter', fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ).animate().slideY(begin: 0.2, end: 0, delay: 200.ms).fadeIn(),
+                              
+                              const SizedBox(height: 24),
+                              
+                              Text(
+                                step['subtitle'],
+                                style: GoogleFonts.getFont('Inter', fontSize: 18, color: AppTheme.textMedium, height: 1.5),
+                                textAlign: TextAlign.center,
+                              ).animate().slideY(begin: 0.2, end: 0, delay: 400.ms).fadeIn(),
+                            ],
+                          ),
                         ),
                       );
                     },

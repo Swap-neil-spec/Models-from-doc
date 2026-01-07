@@ -56,10 +56,21 @@ class GeminiService {
         // Handle type safety: response.data is dynamic
         final Map<String, dynamic> jsonResponse = (data is String) ? jsonDecode(data) : data;
 
-        final text = jsonResponse['candidates']?[0]['content']?['parts']?[0]['text'];
+        // Check for Upstream API Error (Google Gemini)
+        if (jsonResponse.containsKey('error')) {
+           final errorMsg = jsonResponse['error']['message'] ?? 'Unknown API Error';
+           throw Exception('AI Provider Error: $errorMsg');
+        }
+
+        final candidates = jsonResponse['candidates'] as List?;
+        if (candidates == null || candidates.isEmpty) {
+           throw Exception('AI returned no candidates. Possible safety block or invalid input.');
+        }
+
+        final text = candidates[0]['content']?['parts']?[0]['text'];
         return _parseRawText(text);
       } else {
-         throw Exception('Supabase Function failed: ${response.status} - ${response.data}');
+         throw Exception('Proxy Function failed: ${response.status} - ${response.data}');
       }
 
     } catch (e) {

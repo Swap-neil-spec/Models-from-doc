@@ -121,6 +121,8 @@ class _CinematicLoaderState extends State<CinematicLoader> {
           ),
         ],
       ),
+        ],
+      ),
     );
   }
 }
