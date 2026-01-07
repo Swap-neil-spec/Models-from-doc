@@ -9,6 +9,7 @@ import 'package:mfd_app/core/ui/glass_container.dart';
 import 'package:mfd_app/core/theme/app_theme.dart';
 import 'package:mfd_app/features/forecasting/presentation/controllers/forecast_controller.dart';
 import 'package:mfd_app/features/forecasting/presentation/widgets/ai_insights_card.dart';
+import 'package:mfd_app/features/forecasting/presentation/widgets/command_palette.dart';
 import 'package:mfd_app/features/forecasting/presentation/controllers/export_controller.dart';
 import 'package:mfd_app/features/forecasting/domain/entities/assumption.dart';
 import 'package:mfd_app/features/forecasting/presentation/views/hiring_dialog.dart';
@@ -73,7 +74,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return OnyxTourOverlay(
       showTour: _showTour,
       onComplete: _completeTour,
-      child: Stack(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
       children: [
         // Hidden Slide for Export
         Transform.translate(
@@ -389,6 +392,20 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             ),
         ),
       ],
+    ),
+    floatingActionButton: FloatingActionButton.extended(
+      onPressed: () {
+          showDialog(
+            context: context, 
+            builder: (_) => const Dialog(
+              backgroundColor: Colors.transparent, 
+              child: CommandPalette()
+            )
+          );
+      },
+      backgroundColor: AppTheme.electricBlue,
+      icon: const Icon(Icons.terminal),
+      label: const Text('Ask Oracle'),
     ),
     );
   }
