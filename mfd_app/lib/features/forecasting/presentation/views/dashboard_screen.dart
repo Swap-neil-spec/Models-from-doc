@@ -13,6 +13,7 @@ import 'package:mfd_app/features/forecasting/presentation/widgets/health_score_b
 import 'package:mfd_app/features/forecasting/presentation/widgets/command_palette.dart';
 import 'package:mfd_app/features/forecasting/presentation/controllers/export_controller.dart';
 import 'package:mfd_app/features/forecasting/domain/entities/assumption.dart';
+import 'package:mfd_app/features/monetization/presentation/views/investor_dashboard.dart'; // Ensure import if needed or just route
 import 'package:mfd_app/features/forecasting/presentation/views/hiring_dialog.dart';
 import 'package:mfd_app/features/forecasting/domain/logic/smart_benchmarks.dart';
 import 'dart:ui' as ui;
@@ -109,6 +110,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   Row(
                     children: [
                        const HealthScoreBadge(),
+                       const SizedBox(width: 16),
+                       // Share Button
+                       IconButton(
+                         icon: const Icon(Icons.share, color: AppTheme.electricBlue),
+                         tooltip: 'Open Deal Room',
+                         onPressed: () => context.push('/deal-room'),
+                       ),
                        const SizedBox(width: 16),
                        if (!isPro)
                         Padding(

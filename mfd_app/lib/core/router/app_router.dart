@@ -6,6 +6,7 @@ import 'package:mfd_app/features/forecasting/presentation/views/dashboard_screen
 import 'package:mfd_app/features/onboarding/presentation/views/onboarding_screen.dart';
 import 'package:mfd_app/features/home/presentation/views/home_screen.dart';
 import 'package:mfd_app/features/auth/presentation/views/login_screen.dart';
+import 'package:mfd_app/features/monetization/presentation/views/investor_dashboard.dart';
 import 'package:mfd_app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:mfd_app/features/onboarding/domain/entities/onboarding_goal.dart';
 import 'package:mfd_app/features/settings/presentation/views/settings_screen.dart';
@@ -35,6 +36,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: '/deal-room',
+        builder: (context, state) => const InvestorDashboard(),
       ),
 
       // Authenticated Shell (Sidebar + Command Bar)
