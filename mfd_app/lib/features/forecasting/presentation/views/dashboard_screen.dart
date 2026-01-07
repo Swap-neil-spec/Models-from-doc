@@ -16,6 +16,7 @@ import 'dart:ui' as ui;
 import 'package:mfd_app/features/forecasting/presentation/views/weekly_pulse_card.dart';
 import 'package:mfd_app/features/forecasting/presentation/views/slide_export_layout.dart';
 import 'package:file_picker/file_picker.dart'; 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io' as java_io;
 import 'package:flutter/rendering.dart'; // Required for RenderRepaintBoundary
 import 'package:intl/intl.dart';
@@ -31,7 +32,29 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   final GlobalKey _slideKey = GlobalKey();
-  bool _showTour = true; // Use SharedPreferences in prod
+  bool _showTour = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkTourStatus();
+  }
+
+  Future<void> _checkTourStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+       setState(() {
+         // Show tour if NOT seen yet
+         _showTour = !(prefs.getBool('hasSeenOnyxTour') ?? false);
+       });
+    }
+  }
+
+  Future<void> _completeTour() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('hasSeenOnyxTour', true);
+    if (mounted) setState(() => _showTour = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +66,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final isPro = subState.isPro;
 
     // Find Growth Rate Assumption for Slider (or Tree)
-    // Find Growth Rate Assumption for Slider (or Tree)
     final growthAssumption = state.assumptions.firstWhere((a) => a.key == 'revenue_growth_rate', orElse: () => Assumption(key: '', label: '', value: 0));
     final burnAssumption = state.assumptions.firstWhere((a) => a.key == 'monthly_opex', orElse: () => Assumption(key: '', label: '', value: 0));
 
     return OnyxTourOverlay(
       showTour: _showTour,
-      onComplete: () => setState(() => _showTour = false),
+      onComplete: _completeTour,
       child: Stack(
       children: [
         // Hidden Slide for Export

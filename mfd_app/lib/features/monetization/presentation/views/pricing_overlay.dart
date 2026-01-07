@@ -188,9 +188,10 @@ class _PricingCard extends ConsumerWidget {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
-                      // Mock Upgrade Action
-                      ref.read(subscriptionProvider.notifier).mockUpgrade(tier);
-                      // Navigator.pop(context); // Optional: close immediately
+                      // Trigger Persistent Upgrade logic
+                      ref.read(subscriptionProvider.notifier).upgrade(tier);
+                      // In a real Stripe flow, we would call launchCheckout(tier.name);
+                      Navigator.pop(context); 
                     },
                     child: Text(
                       'Select Plan',
