@@ -8,6 +8,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mfd_app/core/ui/glass_container.dart';
 import 'package:mfd_app/core/theme/app_theme.dart';
 import 'package:mfd_app/features/forecasting/presentation/controllers/forecast_controller.dart';
+import 'package:mfd_app/features/forecasting/presentation/widgets/ai_insights_card.dart';
 import 'package:mfd_app/features/forecasting/presentation/controllers/export_controller.dart';
 import 'package:mfd_app/features/forecasting/domain/entities/assumption.dart';
 import 'package:mfd_app/features/forecasting/presentation/views/hiring_dialog.dart';
@@ -136,6 +137,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 ],
               ),
               const SizedBox(height: 32),
+
+              // -1. AI Insights (New Optimization)
+              const AIInsightsCard(),
+              const SizedBox(height: 24),
 
               // 0. Weekly Pulse (Pacing) - Only if data exists
               if (state.rawActuals.isNotEmpty) ...[

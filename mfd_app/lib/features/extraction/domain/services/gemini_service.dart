@@ -96,6 +96,42 @@ class GeminiService {
     }
   }
 
+  Future<String> generateInsights(Map<String, dynamic> forecastSummary) async {
+    try {
+        final prompt = "Analyze this financial forecast summary (Assumptions & Hires) and provide 3 brief, high-impact bullet points of executive insights (Focus on risks, runway, and growth potential). Keep it professional. Data: $forecastSummary";
+        return await _callGenericTextPrompt(prompt);
+    } catch (e) {
+        print('Insights Error: $e');
+        return "AI Insights temporarily unavailable. Please check your connection.";
+    }
+  }
+
+  Future<String> _callGenericTextPrompt(String prompt) async {
+      try {
+        print('Supabase Edge Function: Generative Text Request...');
+        final response = await Supabase.instance.client.functions.invoke(
+          'analyze-doc',
+          body: {'parts': [{'text': prompt}]},
+        );
+
+        if (response.status == 200) {
+          final data = response.data;
+          final Map<String, dynamic> jsonResponse = (data is String) ? jsonDecode(data) : data;
+          
+          if (jsonResponse.containsKey('error')) throw Exception(jsonResponse['error']['message']);
+          
+          final candidates = jsonResponse['candidates'] as List?;
+          if (candidates != null && candidates.isNotEmpty) {
+             final text = candidates[0]['content']?['parts']?[0]['text'];
+             if (text != null) return text;
+          }
+        }
+        throw Exception('No valid text response from AI');
+      } catch (e) {
+        throw Exception('AI Text Error: $e');
+      }
+  }
+
   List<Assumption> _parseRawText(String? text) {
       if (text == null) throw Exception('No content in Gemini response');
 
