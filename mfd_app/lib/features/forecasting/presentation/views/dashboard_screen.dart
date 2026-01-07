@@ -9,6 +9,7 @@ import 'package:mfd_app/core/ui/glass_container.dart';
 import 'package:mfd_app/core/theme/app_theme.dart';
 import 'package:mfd_app/features/forecasting/presentation/controllers/forecast_controller.dart';
 import 'package:mfd_app/features/forecasting/presentation/widgets/ai_insights_card.dart';
+import 'package:mfd_app/features/forecasting/presentation/widgets/health_score_badge.dart';
 import 'package:mfd_app/features/forecasting/presentation/widgets/command_palette.dart';
 import 'package:mfd_app/features/forecasting/presentation/controllers/export_controller.dart';
 import 'package:mfd_app/features/forecasting/domain/entities/assumption.dart';
@@ -107,6 +108,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   ),
                   Row(
                     children: [
+                       const HealthScoreBadge(),
+                       const SizedBox(width: 16),
                        if (!isPro)
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
