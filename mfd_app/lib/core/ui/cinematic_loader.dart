@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'dart:ui' as android_ui; // Use prefix to avoid conflicts
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mfd_app/core/theme/app_theme.dart';
 
@@ -40,17 +41,35 @@ class _CinematicLoaderState extends State<CinematicLoader> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          // Animated Pulse
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppTheme.emeraldGreen.withValues(alpha: 0.2),
+          // Glass Blur Effect
+          ClipRect(
+            child: BackdropFilter(
+              filter: android_ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
             ),
+          ).animate().fadeIn(),
+
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Animated Pulse
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppTheme.emeraldGreen.withValues(alpha: 0.2),
+                ),
             child: Center(
               child: Container(
                 width: 50,

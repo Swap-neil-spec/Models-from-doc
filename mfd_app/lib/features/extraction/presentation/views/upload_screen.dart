@@ -83,7 +83,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-               if (goal != null)
+               if (widget.goal != null)
                   Container(
                     margin: const EdgeInsets.only(bottom: 24),
                     padding: const EdgeInsets.all(16),
@@ -100,7 +100,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                             const Icon(Icons.lightbulb, color: Color(0xFF6C63FF), size: 20),
                             const SizedBox(width: 8),
                             Text(
-                              'Goal: ${goal!.label}',
+                              'Goal: ${widget.goal!.label}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF6C63FF)),
                             ),
                           ],
@@ -110,7 +110,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                         const SizedBox(height: 8),
                         Wrap(
                           spacing: 8,
-                          children: goal!.recommendedDocuments.map((doc) {
+                          children: widget.goal!.recommendedDocuments.map((doc) {
                             return Chip(
                               label: Text(doc.name, style: const TextStyle(fontSize: 10)),
                               backgroundColor: const Color(0xFF6C63FF).withOpacity(0.2),
