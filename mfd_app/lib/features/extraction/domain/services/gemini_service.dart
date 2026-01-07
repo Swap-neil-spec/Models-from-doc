@@ -64,10 +64,27 @@ class GeminiService {
 
         final candidates = jsonResponse['candidates'] as List?;
         if (candidates == null || candidates.isEmpty) {
-           throw Exception('AI returned no candidates. Possible safety block or invalid input.');
+           // Debug: Print full response
+           print('Gemini RAW Response: $jsonResponse');
+           throw Exception('AI returned no candidates. Raw: $jsonResponse');
         }
 
-        final text = candidates[0]['content']?['parts']?[0]['text'];
+        final candidate = candidates[0];
+        if (candidate.containsKey('finishReason')) {
+           final reason = candidate['finishReason'];
+           if (reason != 'STOP') {
+             print('Gemini Finish Reason: $reason');
+             if (reason == 'SAFETY') throw Exception('AI blocked content due to SAFETY/Privacy settings.');
+             if (reason == 'RECITATION') throw Exception('AI blocked due to Copyright/Recitation.');
+           }
+        }
+
+        final content = candidate['content'];
+        if (content == null) throw Exception('AI returned candidates but no content (FinishReason: ${candidate['finishReason']})');
+        
+        final parts = content['parts'] as List?;
+        final text = parts?[0]['text'];
+        
         return _parseRawText(text);
       } else {
          throw Exception('Proxy Function failed: ${response.status} - ${response.data}');
